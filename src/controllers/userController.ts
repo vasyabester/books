@@ -3,6 +3,7 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import User from '../models/user';
 import Role from '../models/role';
+import UsersRoles from '../models/usersRoles';
 
 interface AuthRequest extends Request {
   user?: {
@@ -71,14 +72,7 @@ export const getCurrentUser = async (req: AuthRequest, res: Response) => {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    res.json({
-      id: user.id,
-      username: user.username,
-      email: user.email,
-      roles: user.roles?.map(role => role.id) || [],
-      createdAt: user.createdAt,
-      updatedAt: user.updatedAt,
-    });
+    res.json(user);
   } catch (error) {
     console.error('Error fetching user:', error);
     res.status(500).json({ message: 'Internal server error' });
@@ -101,6 +95,10 @@ export const updateUserRole = async (req: Request, res: Response) => {
       return res.status(404).json({ message: 'Role not found' });
     }
 
+    // Удалить предыдущие записи в UsersRoles для данного пользователя
+    await UsersRoles.destroy({ where: { userId } });
+
+    // Добавить новую роль для пользователя
     await user.addRole(roleInstance);
 
     res.json(user);

@@ -1,25 +1,34 @@
+// src/models/usersRoles.ts
 import { DataTypes, Model } from 'sequelize';
 import sequelize from '../config/database';
 
-class UsersRoles extends Model {}
+class UsersRoles extends Model {
+  public userId!: number;
+  public roleId!: number;
+  public createdAt!: Date;
+  public updatedAt!: Date;
+  public deletedAt!: Date | null;
+}
 
 UsersRoles.init(
   {
     userId: {
       type: DataTypes.INTEGER,
-      primaryKey: true,
+      allowNull: false,
     },
     roleId: {
       type: DataTypes.INTEGER,
-      primaryKey: true,
+      allowNull: false,
     },
     createdAt: {
       type: DataTypes.DATE,
       allowNull: false,
+      defaultValue: DataTypes.NOW,
     },
     updatedAt: {
       type: DataTypes.DATE,
       allowNull: false,
+      defaultValue: DataTypes.NOW,
     },
     deletedAt: {
       type: DataTypes.DATE,
@@ -29,7 +38,7 @@ UsersRoles.init(
   {
     sequelize,
     modelName: 'UsersRoles',
-    paranoid: true, // This enables the "soft delete" functionality
+    paranoid: true,
   }
 );
 
