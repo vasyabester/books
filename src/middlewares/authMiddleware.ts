@@ -33,22 +33,13 @@ export const authorizeAdmin = async (req: AuthRequest, res: Response, next: Next
   }
 
   try {
-    const user = await User.findByPk(req.user.userId, {
-      include: [{
-        model: Role,
-        as: 'roles',
-        attributes: ['name'],
-        through: { attributes: [] }
-      }]
-    });
-
+    const user = await User.findByPk(req.user.userId);
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    const isAdmin = user.roles?.some((role) => role.name === 'Administrator');
-
-    if (!isAdmin) {
+    const role = await Role.findByPk(user.roleId);
+    if (!role || role.name !== 'Administrator') {
       return res.status(403).json({ message: 'User is not authorized' });
     }
 

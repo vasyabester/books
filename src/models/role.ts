@@ -1,5 +1,7 @@
+// src/models/role.ts
 import { DataTypes, Model, Optional } from 'sequelize';
 import sequelize from '../config/database';
+import User from './user';
 
 interface RoleAttributes {
   id: number;
@@ -28,7 +30,6 @@ Role.init(
     name: {
       type: DataTypes.STRING,
       allowNull: false,
-      unique: true,
     },
   },
   {

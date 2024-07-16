@@ -13,11 +13,11 @@ interface AuthRequest extends Request {
 
 // Регистрация пользователя
 export const registerUser = async (req: Request, res: Response) => {
-  const { username, password, email } = req.body;
+  const { username, password, email, roleId } = req.body;
 
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
-    const user = await User.create({ username, password: hashedPassword, email });
+    const user = await User.create({ username, password: hashedPassword, email, roleId });
     res.status(201).json(user);
   } catch (error) {
     console.error('Error registering user:', error);
@@ -71,7 +71,14 @@ export const getCurrentUser = async (req: AuthRequest, res: Response) => {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    res.json(user);
+    res.json({
+      id: user.id,
+      username: user.username,
+      email: user.email,
+      roleId: user.roleId, // добавляем roleId в ответ
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
+    });
   } catch (error) {
     console.error('Error fetching user:', error);
     res.status(500).json({ message: 'Internal server error' });
@@ -82,19 +89,15 @@ export const getCurrentUser = async (req: AuthRequest, res: Response) => {
 export const updateUserRole = async (req: Request, res: Response) => {
   try {
     const userId = parseInt(req.params.userId, 10);
-    const { role } = req.body;
+    const { roleId } = req.body;
     const user = await User.findByPk(userId);
 
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    const roleInstance = await Role.findOne({ where: { name: role } });
-    if (!roleInstance) {
-      return res.status(404).json({ message: 'Role not found' });
-    }
-
-    await user.addRole(roleInstance);
+    user.roleId = roleId;
+    await user.save();
 
     res.json(user);
   } catch (error) {
