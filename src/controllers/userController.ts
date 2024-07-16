@@ -1,7 +1,8 @@
 import { Request, Response } from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import { User, Role } from '../models';
+import User from '../models/user';
+import Role from '../models/role';
 
 interface AuthRequest extends Request {
   user?: {
@@ -16,10 +17,7 @@ export const registerUser = async (req: Request, res: Response) => {
 
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
-
-    // Создать пользователя
     const user = await User.create({ username, password: hashedPassword, email });
-
     res.status(201).json(user);
   } catch (error) {
     console.error('Error registering user:', error);

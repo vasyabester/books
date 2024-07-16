@@ -1,7 +1,15 @@
 import User from './user';
 import Role from './role';
+import sequelize from '../config/database';
 
-User.belongsToMany(Role, { through: 'UserRoles', as: 'roles', foreignKey: 'userId' });
-Role.belongsToMany(User, { through: 'UserRoles', as: 'users', foreignKey: 'roleId' });
+// Определение ассоциаций
+User.belongsToMany(Role, { through: 'UsersRoles', as: 'roles', foreignKey: 'userId' });
+Role.belongsToMany(User, { through: 'UsersRoles', as: 'users', foreignKey: 'roleId' });
 
-export { User, Role };
+const db = {
+  User,
+  Role,
+  sequelize,
+};
+
+export default db;

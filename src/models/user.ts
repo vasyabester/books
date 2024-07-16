@@ -1,5 +1,6 @@
 import { DataTypes, Model, Optional } from 'sequelize';
 import sequelize from '../config/database';
+import Role from './role';
 
 interface UserAttributes {
   id: number;
@@ -17,11 +18,13 @@ class User extends Model<UserAttributes, UserCreationAttributes> implements User
   public username!: string;
   public password!: string;
   public email!: string;
+
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
 
-  public addRole!: (role: any) => Promise<void>;
-  public getRoles!: () => Promise<any[]>;
+  public roles?: Role[];
+
+  public addRole!: (role: Role) => Promise<void>;
 }
 
 User.init(
@@ -51,5 +54,17 @@ User.init(
     modelName: 'User',
   }
 );
+
+User.belongsToMany(Role, {
+  through: 'UsersRoles',
+  as: 'roles',
+  foreignKey: 'userId'
+});
+
+Role.belongsToMany(User, {
+  through: 'UsersRoles',
+  as: 'users',
+  foreignKey: 'roleId'
+});
 
 export default User;

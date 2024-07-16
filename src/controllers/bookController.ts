@@ -14,7 +14,7 @@ export const addBook = async (req: Request, res: Response) => {
   }
 };
 
-// Получение списка книг
+// Получение списка всех книг
 export const getBooks = async (req: Request, res: Response) => {
   try {
     const books = await Book.findAll();
@@ -58,6 +58,7 @@ export const updateBook = async (req: Request, res: Response) => {
     book.genres = genres;
 
     await book.save();
+
     res.json(book);
   } catch (error) {
     console.error('Error updating book:', error);
@@ -76,7 +77,8 @@ export const deleteBook = async (req: Request, res: Response) => {
     }
 
     await book.destroy();
-    res.status(204).send();
+
+    res.json({ message: 'Book deleted successfully' });
   } catch (error) {
     console.error('Error deleting book:', error);
     res.status(500).json({ message: 'Internal server error' });

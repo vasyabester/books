@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
-import { User, Role } from '../models';
+import User from '../models/user';
+import Role from '../models/role';
 
 interface AuthRequest extends Request {
   user?: {
@@ -32,13 +33,20 @@ export const authorizeAdmin = async (req: AuthRequest, res: Response, next: Next
   }
 
   try {
-    const user = await User.findByPk(req.user.userId);
+    const user = await User.findByPk(req.user.userId, {
+      include: [{
+        model: Role,
+        as: 'roles',
+        attributes: ['name'],
+        through: { attributes: [] }
+      }]
+    });
+
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    const roles = await user.getRoles();
-    const isAdmin = roles.some((role: Role) => role.name === 'Administrator');
+    const isAdmin = user.roles?.some((role) => role.name === 'Administrator');
 
     if (!isAdmin) {
       return res.status(403).json({ message: 'User is not authorized' });

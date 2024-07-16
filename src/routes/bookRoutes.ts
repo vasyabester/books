@@ -4,7 +4,8 @@ import { authenticate, authorizeAdmin } from '../middlewares/authMiddleware';
 
 const router = Router();
 
-router.post('/', authenticate, authorizeAdmin, addBook);
+// router.post('/', authenticate, authorizeAdmin, addBook);
+router.post('/', addBook);
 router.get('/', getBooks);
 router.get('/:id', getBookById);
 router.put('/:id', authenticate, authorizeAdmin, updateBook);

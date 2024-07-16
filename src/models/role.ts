@@ -13,6 +13,7 @@ interface RoleCreationAttributes extends Optional<RoleAttributes, 'id'> {}
 class Role extends Model<RoleAttributes, RoleCreationAttributes> implements RoleAttributes {
   public id!: number;
   public name!: string;
+
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
 }

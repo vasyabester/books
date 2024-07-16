@@ -7,6 +7,8 @@ interface BookAttributes {
   author: string;
   publicationDate: Date;
   genres: string;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 interface BookCreationAttributes extends Optional<BookAttributes, 'id'> {}
@@ -48,7 +50,7 @@ Book.init(
   },
   {
     sequelize,
-    tableName: 'Books',
+    tableName: 'books',
   }
 );
 
