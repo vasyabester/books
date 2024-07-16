@@ -75,7 +75,7 @@ export const getCurrentUser = async (req: AuthRequest, res: Response) => {
       id: user.id,
       username: user.username,
       email: user.email,
-      roleId: user.roleId, // добавляем roleId в ответ
+      roleId: user.roleId,
       createdAt: user.createdAt,
       updatedAt: user.updatedAt,
     });
@@ -94,6 +94,11 @@ export const updateUserRole = async (req: Request, res: Response) => {
 
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
+    }
+
+    const roleInstance = await Role.findByPk(roleId);
+    if (!roleInstance) {
+      return res.status(404).json({ message: 'Role not found' });
     }
 
     user.roleId = roleId;
