@@ -7,7 +7,6 @@ interface UserAttributes {
   username: string;
   password: string;
   email: string;
-  roleId: number; // добавляем поле roleId
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -19,12 +18,16 @@ class User extends Model<UserAttributes, UserCreationAttributes> implements User
   public username!: string;
   public password!: string;
   public email!: string;
-  public roleId!: number; // добавляем поле roleId
 
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
 
   public roles?: Role[];
+
+  // Методы для работы с ролями
+  public addRole!: (role: Role) => Promise<void>;
+  public getRoles!: () => Promise<Role[]>;
+  public setRoles!: (roles: Role[]) => Promise<void>;
 }
 
 User.init(
@@ -47,11 +50,6 @@ User.init(
       type: DataTypes.STRING,
       allowNull: false,
       unique: true,
-    },
-    roleId: { // добавляем поле roleId
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      defaultValue: 2, // предположим, что 2 - это ID роли пользователя
     },
   },
   {

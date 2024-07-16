@@ -13,11 +13,11 @@ interface AuthRequest extends Request {
 
 // Регистрация пользователя
 export const registerUser = async (req: Request, res: Response) => {
-  const { username, password, email, roleId } = req.body;
+  const { username, password, email } = req.body;
 
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
-    const user = await User.create({ username, password: hashedPassword, email, roleId });
+    const user = await User.create({ username, password: hashedPassword, email });
     res.status(201).json(user);
   } catch (error) {
     console.error('Error registering user:', error);
@@ -62,7 +62,7 @@ export const getCurrentUser = async (req: AuthRequest, res: Response) => {
       include: [{
         model: Role,
         as: 'roles',
-        attributes: ['name'],
+        attributes: ['id', 'name'],
         through: { attributes: [] }
       }]
     });
@@ -75,7 +75,7 @@ export const getCurrentUser = async (req: AuthRequest, res: Response) => {
       id: user.id,
       username: user.username,
       email: user.email,
-      roleId: user.roleId,
+      roles: user.roles?.map(role => role.id) || [],
       createdAt: user.createdAt,
       updatedAt: user.updatedAt,
     });
@@ -101,8 +101,7 @@ export const updateUserRole = async (req: Request, res: Response) => {
       return res.status(404).json({ message: 'Role not found' });
     }
 
-    user.roleId = roleId;
-    await user.save();
+    await user.addRole(roleInstance);
 
     res.json(user);
   } catch (error) {

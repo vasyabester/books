@@ -27,19 +27,33 @@ export const authenticate = (req: AuthRequest, res: Response, next: NextFunction
 };
 
 // Middleware для проверки роли администратора
+// Middleware для проверки роли администратора
 export const authorizeAdmin = async (req: AuthRequest, res: Response, next: NextFunction) => {
   if (!req.user) {
     return res.status(401).json({ message: 'User not authenticated' });
   }
 
   try {
-    const user = await User.findByPk(req.user.userId);
+    const user = await User.findByPk(req.user.userId, {
+      include: [{
+        model: Role,
+        as: 'roles',
+        attributes: ['id', 'name'],
+        through: { attributes: [] }
+      }]
+    });
+
     if (!user) {
+      console.log('User not found');
       return res.status(404).json({ message: 'User not found' });
     }
 
-    const role = await Role.findByPk(user.roleId);
-    if (!role || role.name !== 'Administrator') {
+    console.log('User roles:', user.roles?.map(role => role.name));
+
+    const isAdmin = user.roles?.some((role) => role.name === 'Administrator');
+
+    if (!isAdmin) {
+      console.log('User is not an admin');
       return res.status(403).json({ message: 'User is not authorized' });
     }
 
@@ -49,3 +63,4 @@ export const authorizeAdmin = async (req: AuthRequest, res: Response, next: Next
     res.status(500).json({ message: 'Internal server error' });
   }
 };
+
