@@ -47,7 +47,6 @@ Book API — это RESTful API для управления коллекцией
 
 Создайте файл `.env` в корне проекта и добавьте следующие переменные:
 
-```plaintext
 DATABASE_URL=postgres://username:password@localhost:5432/bookapi
 JWT_SECRET=your_jwt_secret
 SMTP_HOST=smtp.ethereal.email
