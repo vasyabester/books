@@ -42,6 +42,7 @@ Book API — это RESTful API для управления коллекцией
     "dialect": "postgres"
   }
 }
+```
 
 ## Переменные окружения
 
