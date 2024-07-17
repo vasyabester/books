@@ -21,14 +21,14 @@ export const registerUser = async (req: Request, res: Response) => {
 
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
-    const user = await User.create({ username, password: hashedPassword, email, roleId: 2 });
+    const token = jwt.sign({ username, password: hashedPassword, email }, 'your_jwt_secret', { expiresIn: '1h' });
 
-    // Отправка почты
+    const confirmationUrl = `http://localhost:3000/users/confirm/${token}`;
     const mailOptions = {
-      from: 'your-email@example.com',
-      to: user.email,
-      subject: 'Welcome to Book API',
-      text: `Hi ${user.username}, welcome to our Book API!`
+      from: process.env.EMAIL_FROM,
+      to: email,
+      subject: 'Confirm your registration',
+      text: `Hi ${username}, please confirm your registration by clicking the following link: ${confirmationUrl}`
     };
 
     transporter.sendMail(mailOptions, (error, info) => {
@@ -40,9 +40,25 @@ export const registerUser = async (req: Request, res: Response) => {
       }
     });
 
-    res.status(201).json(user);
+    res.status(201).json({ message: 'Confirmation email sent. Please check your email.' });
   } catch (error) {
     console.error('Error registering user:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
+// Подтверждение пользователя
+export const confirmUser = async (req: Request, res: Response) => {
+  const { token } = req.params;
+
+  try {
+    const decoded: any = jwt.verify(token, 'your_jwt_secret');
+    const { username, password, email } = decoded;
+
+    const user = await User.create({ username, password, email, roleId: 2 });
+    res.status(200).json({ message: 'User confirmed and registered', user });
+  } catch (error) {
+    console.error('Error confirming user:', error);
     res.status(500).json({ message: 'Internal server error' });
   }
 };
