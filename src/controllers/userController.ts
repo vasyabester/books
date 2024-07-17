@@ -28,7 +28,8 @@ export const registerUser = async (req: Request, res: Response) => {
       from: process.env.EMAIL_FROM,
       to: email,
       subject: 'Confirm your registration',
-      text: `Hi ${username}, please confirm your registration by clicking the following link: ${confirmationUrl}`
+      text: `Hi ${username}, please confirm your registration by clicking the following link: ${confirmationUrl}`,
+      html: `<p>Hi ${username},</p><p>Please confirm your registration by clicking the following link:</p><p><a href="${confirmationUrl}">${confirmationUrl}</a></p>`
     };
 
     transporter.sendMail(mailOptions, (error, info) => {
