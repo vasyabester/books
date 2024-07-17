@@ -1,5 +1,5 @@
 // src/models/usersRoles.ts
-import { DataTypes, Model } from 'sequelize';
+import { Model, DataTypes } from 'sequelize';
 import sequelize from '../config/database';
 
 class UsersRoles extends Model {
@@ -14,11 +14,11 @@ UsersRoles.init(
   {
     userId: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      primaryKey: true,
     },
     roleId: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      primaryKey: true,
     },
     createdAt: {
       type: DataTypes.DATE,
@@ -38,6 +38,7 @@ UsersRoles.init(
   {
     sequelize,
     modelName: 'UsersRoles',
+    timestamps: true,
     paranoid: true,
   }
 );

@@ -1,3 +1,4 @@
+// src/models/user.ts
 import { DataTypes, Model, Optional } from 'sequelize';
 import sequelize from '../config/database';
 import Role from './role';
@@ -7,6 +8,7 @@ interface UserAttributes {
   username: string;
   password: string;
   email: string;
+  roleId?: number; // Сделаем roleId необязательным
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -18,16 +20,14 @@ class User extends Model<UserAttributes, UserCreationAttributes> implements User
   public username!: string;
   public password!: string;
   public email!: string;
+  public roleId?: number;
 
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
 
   public roles?: Role[];
 
-  // Методы для работы с ролями
   public addRole!: (role: Role) => Promise<void>;
-  public getRoles!: () => Promise<Role[]>;
-  public setRoles!: (roles: Role[]) => Promise<void>;
 }
 
 User.init(
@@ -51,6 +51,14 @@ User.init(
       allowNull: false,
       unique: true,
     },
+    roleId: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      references: {
+        model: 'Roles',
+        key: 'id',
+      },
+    },
   },
   {
     sequelize,
@@ -61,13 +69,13 @@ User.init(
 User.belongsToMany(Role, {
   through: 'UsersRoles',
   as: 'roles',
-  foreignKey: 'userId'
+  foreignKey: 'userId',
 });
 
 Role.belongsToMany(User, {
   through: 'UsersRoles',
   as: 'users',
-  foreignKey: 'roleId'
+  foreignKey: 'roleId',
 });
 
 export default User;

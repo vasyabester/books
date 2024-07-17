@@ -1,3 +1,4 @@
+// src/controllers/userController.ts
 import { Request, Response } from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
@@ -98,10 +99,13 @@ export const updateUserRole = async (req: Request, res: Response) => {
     // Удалить предыдущие записи в UsersRoles для данного пользователя
     await UsersRoles.destroy({ where: { userId } });
 
-    // Добавить новую роль для пользователя
-    await user.addRole(roleInstance);
+    // Добавить новую запись в UsersRoles
+    await UsersRoles.create({ userId: user.id, roleId: roleInstance.id });
 
-    res.json(user);
+    // Обновить роль в таблице Users
+    await user.update({ roleId });
+
+    res.json({ message: 'User role updated successfully' });
   } catch (error) {
     console.error('Error updating user role:', error);
     res.status(500).json({ message: 'Internal server error' });
