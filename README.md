@@ -55,3 +55,17 @@ SMTP_USER=your_smtp_user
 SMTP_PASS=your_smtp_pass
 EMAIL_FROM=your_email@example.com
 
+## Эндпоинты
+
+### Регистрация пользователя
+`POST /users/register`
+
+Тело запроса:
+
+```json
+{
+  "username": "your_username",
+  "password": "your_password",
+  "email": "your_email@example.com"
+}
+
