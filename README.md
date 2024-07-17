@@ -1,2 +1,4 @@
-# books
-app for working with books
+#Book API
+## Описание
+
+Book API — это RESTful API для управления коллекцией книг, реализованное на Node.js с использованием Express и PostgreSQL. Поддерживает регистрацию, аутентификацию пользователей и CRUD операции для книг.
