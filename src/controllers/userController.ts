@@ -1,10 +1,11 @@
-// src/controllers/userController.ts
 import { Request, Response } from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import User from '../models/user';
 import Role from '../models/role';
-import UsersRoles from '../models/usersRoles';
+import UsersRoles from '../models/usersRoles';  // Добавляем этот импорт
+import transporter from '../config/mailConfig';
+import nodemailer from 'nodemailer';
 
 interface AuthRequest extends Request {
   user?: {
@@ -20,7 +21,25 @@ export const registerUser = async (req: Request, res: Response) => {
 
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
-    const user = await User.create({ username, password: hashedPassword, email, roleId: 2 }); // Assigning default roleId to 2 (User)
+    const user = await User.create({ username, password: hashedPassword, email, roleId: 2 });
+
+    // Отправка почты
+    const mailOptions = {
+      from: 'your-email@example.com',
+      to: user.email,
+      subject: 'Welcome to Book API',
+      text: `Hi ${user.username}, welcome to our Book API!`
+    };
+
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.error('Error sending email:', error);
+      } else {
+        console.log('Email sent:', info.response);
+        console.log('Preview URL:', nodemailer.getTestMessageUrl(info));
+      }
+    });
+
     res.status(201).json(user);
   } catch (error) {
     console.error('Error registering user:', error);
@@ -61,20 +80,20 @@ export const getCurrentUser = async (req: AuthRequest, res: Response) => {
       return res.status(400).json({ message: 'User not authenticated' });
     }
 
-    const user = await User.findByPk(req.user.userId);
+    const user = await User.findByPk(req.user.userId, {
+      include: [{
+        model: Role,
+        as: 'roles',
+        attributes: ['name'],
+        through: { attributes: [] }
+      }]
+    });
 
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    res.json({
-      id: user.id,
-      username: user.username,
-      email: user.email,
-      roleId: user.roleId,
-      createdAt: user.createdAt,
-      updatedAt: user.updatedAt,
-    });
+    res.json(user);
   } catch (error) {
     console.error('Error fetching user:', error);
     res.status(500).json({ message: 'Internal server error' });
@@ -98,19 +117,8 @@ export const updateUserRole = async (req: Request, res: Response) => {
     }
 
     await user.update({ roleId });
-
-    // Update the UsersRoles table
-    await UsersRoles.update(
-      { deletedAt: new Date() },
-      { where: { userId: user.id, deletedAt: null } }
-    );
-
-    await UsersRoles.create({
-      userId: user.id,
-      roleId: roleInstance.id,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    });
+    await UsersRoles.destroy({ where: { userId } });
+    await UsersRoles.create({ userId, roleId });
 
     res.json(user);
   } catch (error) {
