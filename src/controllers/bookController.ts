@@ -63,7 +63,7 @@ export const updateBook = async (req: AuthRequest, res: Response) => {
   }
 };
 
-export const deleteBook = async (req: AuthRequest, res: Response) => {
+export const deleteBook = async (req: Request, res: Response) => {
   const { id } = req.params;
 
   try {
@@ -73,7 +73,7 @@ export const deleteBook = async (req: AuthRequest, res: Response) => {
     }
 
     await book.destroy();
-    res.status(204).send();
+    res.status(200).json({ message: 'Book deleted successfully' });
   } catch (error) {
     console.error('Error deleting book:', error);
     res.status(500).json({ message: 'Internal server error' });
