@@ -41,7 +41,7 @@ export const authorizeAdmin = async (req: AuthRequest, res: Response, next: Next
     }
 
     if (user.roleId !== 1) { // Assuming 1 is the roleId for Administrator
-      return res.status(403).json({ message: 'User is not authorized' });
+      return res.status(403).json({ message: 'Sorry, you dont have enough rights for this action' }); // нужно было просто добавить эту строку!
     }
 
     next();
