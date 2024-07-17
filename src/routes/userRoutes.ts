@@ -1,3 +1,4 @@
+// src/routes/userRoutes.ts
 import { Router } from 'express';
 import { registerUser, loginUser, getCurrentUser, updateUserRole } from '../controllers/userController';
 import { authenticate, authorizeAdmin } from '../middlewares/authMiddleware';

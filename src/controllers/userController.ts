@@ -10,6 +10,7 @@ interface AuthRequest extends Request {
   user?: {
     userId: number;
     username: string;
+    roleId: number;
   };
 }
 
@@ -19,7 +20,7 @@ export const registerUser = async (req: Request, res: Response) => {
 
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
-    const user = await User.create({ username, password: hashedPassword, email });
+    const user = await User.create({ username, password: hashedPassword, email, roleId: 2 }); // Assigning default roleId to 2 (User)
     res.status(201).json(user);
   } catch (error) {
     console.error('Error registering user:', error);
@@ -42,7 +43,7 @@ export const loginUser = async (req: Request, res: Response) => {
       return res.status(401).json({ message: 'Invalid password' });
     }
 
-    const token = jwt.sign({ userId: user.id, username: user.username }, 'your_jwt_secret', {
+    const token = jwt.sign({ userId: user.id, username: user.username, roleId: user.roleId }, 'your_jwt_secret', {
       expiresIn: '24h',
     });
 
@@ -60,20 +61,20 @@ export const getCurrentUser = async (req: AuthRequest, res: Response) => {
       return res.status(400).json({ message: 'User not authenticated' });
     }
 
-    const user = await User.findByPk(req.user.userId, {
-      include: [{
-        model: Role,
-        as: 'roles',
-        attributes: ['id', 'name'],
-        through: { attributes: [] }
-      }]
-    });
+    const user = await User.findByPk(req.user.userId);
 
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    res.json(user);
+    res.json({
+      id: user.id,
+      username: user.username,
+      email: user.email,
+      roleId: user.roleId,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
+    });
   } catch (error) {
     console.error('Error fetching user:', error);
     res.status(500).json({ message: 'Internal server error' });
@@ -96,16 +97,22 @@ export const updateUserRole = async (req: Request, res: Response) => {
       return res.status(404).json({ message: 'Role not found' });
     }
 
-    // Удалить предыдущие записи в UsersRoles для данного пользователя
-    await UsersRoles.destroy({ where: { userId } });
-
-    // Добавить новую запись в UsersRoles
-    await UsersRoles.create({ userId: user.id, roleId: roleInstance.id });
-
-    // Обновить роль в таблице Users
     await user.update({ roleId });
 
-    res.json({ message: 'User role updated successfully' });
+    // Update the UsersRoles table
+    await UsersRoles.update(
+      { deletedAt: new Date() },
+      { where: { userId: user.id, deletedAt: null } }
+    );
+
+    await UsersRoles.create({
+      userId: user.id,
+      roleId: roleInstance.id,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    });
+
+    res.json(user);
   } catch (error) {
     console.error('Error updating user role:', error);
     res.status(500).json({ message: 'Internal server error' });

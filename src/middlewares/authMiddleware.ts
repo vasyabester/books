@@ -1,12 +1,14 @@
+// src/middlewares/authMiddleware.ts
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import User from '../models/user';
 import Role from '../models/role';
 
-interface AuthRequest extends Request {
+export interface AuthRequest extends Request {
   user?: {
     userId: number;
     username: string;
+    roleId: number;
   };
 }
 
@@ -19,7 +21,7 @@ export const authenticate = (req: AuthRequest, res: Response, next: NextFunction
 
   try {
     const decoded = jwt.verify(token, 'your_jwt_secret');
-    req.user = decoded as { userId: number; username: string };
+    req.user = decoded as { userId: number; username: string; roleId: number };
     next();
   } catch (err) {
     return res.status(401).json({ message: 'Invalid token' });
@@ -27,33 +29,18 @@ export const authenticate = (req: AuthRequest, res: Response, next: NextFunction
 };
 
 // Middleware для проверки роли администратора
-// Middleware для проверки роли администратора
 export const authorizeAdmin = async (req: AuthRequest, res: Response, next: NextFunction) => {
   if (!req.user) {
     return res.status(401).json({ message: 'User not authenticated' });
   }
 
   try {
-    const user = await User.findByPk(req.user.userId, {
-      include: [{
-        model: Role,
-        as: 'roles',
-        attributes: ['id', 'name'],
-        through: { attributes: [] }
-      }]
-    });
-
+    const user = await User.findByPk(req.user.userId);
     if (!user) {
-      console.log('User not found');
       return res.status(404).json({ message: 'User not found' });
     }
 
-    console.log('User roles:', user.roles?.map(role => role.name));
-
-    const isAdmin = user.roles?.some((role) => role.name === 'Administrator');
-
-    if (!isAdmin) {
-      console.log('User is not an admin');
+    if (user.roleId !== 1) { // Assuming 1 is the roleId for Administrator
       return res.status(403).json({ message: 'User is not authorized' });
     }
 
@@ -63,4 +50,3 @@ export const authorizeAdmin = async (req: AuthRequest, res: Response, next: Next
     res.status(500).json({ message: 'Internal server error' });
   }
 };
-

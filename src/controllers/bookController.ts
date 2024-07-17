@@ -1,8 +1,9 @@
+// src/controllers/bookController.ts
 import { Request, Response } from 'express';
 import Book from '../models/book';
+import { AuthRequest } from '../middlewares/authMiddleware';
 
-// Добавление книги
-export const addBook = async (req: Request, res: Response) => {
+export const addBook = async (req: AuthRequest, res: Response) => {
   const { title, author, publicationDate, genres } = req.body;
 
   try {
@@ -14,18 +15,16 @@ export const addBook = async (req: Request, res: Response) => {
   }
 };
 
-// Получение списка всех книг
 export const getBooks = async (req: Request, res: Response) => {
   try {
     const books = await Book.findAll();
-    res.json(books);
+    res.status(200).json(books);
   } catch (error) {
     console.error('Error fetching books:', error);
     res.status(500).json({ message: 'Internal server error' });
   }
 };
 
-// Получение книги по ID
 export const getBookById = async (req: Request, res: Response) => {
   const { id } = req.params;
 
@@ -34,15 +33,14 @@ export const getBookById = async (req: Request, res: Response) => {
     if (!book) {
       return res.status(404).json({ message: 'Book not found' });
     }
-    res.json(book);
+    res.status(200).json(book);
   } catch (error) {
     console.error('Error fetching book:', error);
     res.status(500).json({ message: 'Internal server error' });
   }
 };
 
-// Обновление информации о книге
-export const updateBook = async (req: Request, res: Response) => {
+export const updateBook = async (req: AuthRequest, res: Response) => {
   const { id } = req.params;
   const { title, author, publicationDate, genres } = req.body;
 
@@ -56,18 +54,16 @@ export const updateBook = async (req: Request, res: Response) => {
     book.author = author;
     book.publicationDate = publicationDate;
     book.genres = genres;
-
     await book.save();
 
-    res.json(book);
+    res.status(200).json(book);
   } catch (error) {
     console.error('Error updating book:', error);
     res.status(500).json({ message: 'Internal server error' });
   }
 };
 
-// Удаление книги
-export const deleteBook = async (req: Request, res: Response) => {
+export const deleteBook = async (req: AuthRequest, res: Response) => {
   const { id } = req.params;
 
   try {
@@ -77,8 +73,7 @@ export const deleteBook = async (req: Request, res: Response) => {
     }
 
     await book.destroy();
-
-    res.json({ message: 'Book deleted successfully' });
+    res.status(204).send();
   } catch (error) {
     console.error('Error deleting book:', error);
     res.status(500).json({ message: 'Internal server error' });

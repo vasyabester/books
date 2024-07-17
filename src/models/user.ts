@@ -8,7 +8,7 @@ interface UserAttributes {
   username: string;
   password: string;
   email: string;
-  roleId?: number; // Сделаем roleId необязательным
+  roleId: number;
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -20,14 +20,10 @@ class User extends Model<UserAttributes, UserCreationAttributes> implements User
   public username!: string;
   public password!: string;
   public email!: string;
-  public roleId?: number;
+  public roleId!: number;
 
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
-
-  public roles?: Role[];
-
-  public addRole!: (role: Role) => Promise<void>;
 }
 
 User.init(
@@ -53,11 +49,7 @@ User.init(
     },
     roleId: {
       type: DataTypes.INTEGER,
-      allowNull: true,
-      references: {
-        model: 'Roles',
-        key: 'id',
-      },
+      allowNull: false,
     },
   },
   {
@@ -69,13 +61,13 @@ User.init(
 User.belongsToMany(Role, {
   through: 'UsersRoles',
   as: 'roles',
-  foreignKey: 'userId',
+  foreignKey: 'userId'
 });
 
 Role.belongsToMany(User, {
   through: 'UsersRoles',
   as: 'users',
-  foreignKey: 'roleId',
+  foreignKey: 'roleId'
 });
 
 export default User;
