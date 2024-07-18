@@ -151,3 +151,163 @@ Response:
   "roleId": 1
 }
 ```
+
+### Добавление книги
+
+`POST /books`
+
+Заголовок:
+
+```json
+{
+   Authorization: Bearer your_jwt_token
+}
+
+```
+Тело запроса:
+
+```json
+{
+  "title": "New Book",
+  "author": "Author Name",
+  "publicationDate": "2023-01-01",
+  "genres": "Fiction"
+}
+```
+
+Response:
+```json
+{
+  "message": "Book added successfully",
+  "book": {
+    "id": 1,
+    "title": "New Book",
+    "author": "Author Name",
+    "publicationDate": "2023-01-01",
+    "genres": "Fiction"
+  }
+}
+```
+
+
+### Получение всех книг
+
+`GET /books`
+
+Тело запроса:
+
+```json
+{
+  "title": "New Book",
+  "author": "Author Name",
+  "publicationDate": "2023-01-01",
+  "genres": "Fiction"
+}
+```
+
+Response:
+```json
+
+### Добавление книги
+
+`GET /books`
+
+Заголовок:
+
+```json
+{
+   Authorization: Bearer your_jwt_token
+}
+
+```
+Response:
+```json
+[
+  {
+    "id": 1,
+    "title": "New Book",
+    "author": "Author Name",
+    "publicationDate": "2023-01-01",
+    "genres": "Fiction"
+  }
+]
+```
+### Получение книги по ID
+
+`GET /books`
+
+Заголовок:
+
+```json
+{
+   Authorization: Bearer your_jwt_token
+}
+
+```
+Response:
+```json
+{
+  "id": 1,
+  "title": "New Book",
+  "author": "Author Name",
+  "publicationDate": "2023-01-01",
+  "genres": "Fiction"
+}
+
+```
+
+### Обновление книги
+
+`PUT /books`
+
+Заголовок:
+
+```json
+{
+   Authorization: Bearer your_jwt_token
+}
+
+```
+Тело запроса:
+
+```json
+{
+  "title": "Updated Book Title",
+  "author": "Updated Author",
+  "publicationDate": "2023-01-01",
+  "genres": "Updated Genres"
+}
+```
+
+Response:
+```json
+{
+  "message": "Book updated successfully",
+  "book": {
+    "id": 1,
+    "title": "Updated Book Title",
+    "author": "Updated Author",
+    "publicationDate": "2023-01-01",
+    "genres": "Updated Genres"
+  }
+}
+```
+
+### Удаление книги
+
+`DELETE /books`
+
+Заголовок:
+
+```json
+{
+   Authorization: Bearer your_jwt_token
+}
+
+```
+Response:
+```json
+{
+  "message": "Book deleted successfully"
+}
+```
