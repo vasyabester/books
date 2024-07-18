@@ -1,4 +1,3 @@
-// src/routes/bookRoutes.ts
 import { Router } from 'express';
 import { addBook, getBooks, getBookById, updateBook, deleteBook } from '../controllers/bookController';
 import { authenticate, authorizeAdmin } from '../middlewares/authMiddleware';

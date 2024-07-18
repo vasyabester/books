@@ -1,4 +1,3 @@
-// src/controllers/bookController.ts
 import { Request, Response } from 'express';
 import Book from '../models/book';
 import { AuthRequest } from '../middlewares/authMiddleware';

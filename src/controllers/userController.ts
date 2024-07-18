@@ -3,7 +3,7 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import User from '../models/user';
 import Role from '../models/role';
-import UsersRoles from '../models/usersRoles';  // Добавляем этот импорт
+import UsersRoles from '../models/usersRoles';
 import transporter from '../config/mailConfig';
 import nodemailer from 'nodemailer';
 

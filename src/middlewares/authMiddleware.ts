@@ -1,8 +1,6 @@
-// src/middlewares/authMiddleware.ts
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import User from '../models/user';
-import Role from '../models/role';
 
 export interface AuthRequest extends Request {
   user?: {

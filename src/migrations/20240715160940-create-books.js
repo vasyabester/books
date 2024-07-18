@@ -1,4 +1,4 @@
-const { QueryInterface, DataTypes } = require('sequelize');
+const { DataTypes } = require('sequelize');
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
