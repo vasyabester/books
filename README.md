@@ -75,4 +75,11 @@ EMAIL_FROM=your-email@example.com
   "password": "your_password",
   "email": "your_email@example.com"
 }
+```
+Response:
+```json
+{
+  "message": "Registration successful. Please check your email to confirm."
+}
+```
 
