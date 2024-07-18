@@ -134,7 +134,7 @@ Response:
 
 Заголовок:
 
-```json
+```plaintext
 {
    Authorization: Bearer your_jwt_token
 }
@@ -164,7 +164,7 @@ Response:
 
 Заголовок:
 
-```json
+```plaintext
 {
    Authorization: Bearer your_jwt_token
 }
@@ -229,7 +229,7 @@ Response:
 
 Заголовок:
 
-```json
+```plaintext
 {
    Authorization: Bearer your_jwt_token
 }
@@ -253,7 +253,7 @@ Response:
 
 Заголовок:
 
-```json
+```plaintext
 {
    Authorization: Bearer your_jwt_token
 }
@@ -290,7 +290,7 @@ Response:
 
 Заголовок:
 
-```json
+```plaintext
 {
    Authorization: Bearer your_jwt_token
 }
@@ -300,5 +300,8 @@ Response:
 ```json
 {
   "message": "Book deleted successfully"
+
+### Удаление книги
+Для тестирования API с помощью Postman, в репозитории предоставлен JSON файл с коллекцией запросов. Вы можете импортировать этот файл в Postman для быстрого тестирования всех доступных эндпоинтов.
 }
 ```
