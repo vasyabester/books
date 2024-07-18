@@ -213,21 +213,6 @@ Response:
 
 Response:
 ```json
-
-### Добавление книги
-
-`GET /books`
-
-Заголовок:
-
-```json
-{
-   Authorization: Bearer your_jwt_token
-}
-
-```
-Response:
-```json
 [
   {
     "id": 1,
