@@ -46,7 +46,7 @@ Book API — это RESTful API для управления коллекцией
 
 ## Миграции
 Для выполнения миграций используйте команду:
-```json
+```plaintext
    npx sequelize-cli db:migrate
 ```
 
