@@ -112,7 +112,7 @@ Response:
 
 Заголовок:
 
-```json
+```plaintext
 {
    Authorization: Bearer your_jwt_token
 }
