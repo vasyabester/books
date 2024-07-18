@@ -82,4 +82,42 @@ Response:
   "message": "Registration successful. Please check your email to confirm."
 }
 ```
+### Аутентификация пользователя
+`POST /users/login`
 
+Тело запроса:
+
+```json
+{
+  "username": "exampleuser",
+  "password": "examplepassword"
+}
+
+```
+Response:
+```json
+{
+  "token": "your_jwt_token"
+}
+```
+### Получение текущего пользователя
+
+`GET /users/me`
+
+Заголовок:
+
+```json
+{
+Authorization: Bearer your_jwt_token
+}
+
+```
+Response:
+```json
+{
+  "id": 1,
+  "username": "exampleuser",
+  "email": "user@example.com",
+  "roleId": 1
+}
+```
