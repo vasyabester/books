@@ -300,6 +300,7 @@ Response:
 ```json
 {
   "message": "Book deleted successfully"
+}
 ```
 
 ### Тестирование
