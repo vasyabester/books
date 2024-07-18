@@ -54,7 +54,7 @@ Book API — это RESTful API для управления коллекцией
 
 Создайте файл `.env` в корне проекта и добавьте следующие переменные:
 
-```json
+```plaintext
 DB_NAME=bookapi
 DB_USER=postgres
 DB_PASSWORD=postgres
