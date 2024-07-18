@@ -108,7 +108,7 @@ Response:
 
 ```json
 {
-Authorization: Bearer your_jwt_token
+   Authorization: Bearer your_jwt_token
 }
 
 ```
