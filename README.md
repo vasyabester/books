@@ -121,3 +121,33 @@ Response:
   "roleId": 1
 }
 ```
+
+### Изменение роли пользователя
+
+`PATCH /users/:userId/role`
+
+Заголовок:
+
+```json
+{
+   Authorization: Bearer your_jwt_token
+}
+
+```
+Тело запроса:
+
+```json
+{
+  "roleId": 2
+}
+```
+
+Response:
+```json
+{
+  "id": 1,
+  "username": "exampleuser",
+  "email": "user@example.com",
+  "roleId": 1
+}
+```
